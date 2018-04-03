@@ -1,8 +1,6 @@
 # VISIT THE WIKI FOR INFO, AND SCREENSHOTS
 
-For suggestions, concerns, troubleshoot, new features, updates, etc, join my discord server: 
-
-https://discord.gg/fJvqFGP
+This is Chuck's fork which was custom made for a scanning server.  Main features added are allowing users to join and leave areas of scans, Bot created EX raid channels with joinable lobbies that auto delete after raid completion.  User verification after they submit pictures upon joining the server and a robust pokedex bot.
 
 # NOTICE
 This bot has been discontinued since Jan 29, 2018 - as far as adding new features, commands, etc; I am still offering support and updates on script, commands, etc... version `2.0` is coming soon with the release of "`PokéHelp`"[bot]... lots of new features, command-line management/settings, etc

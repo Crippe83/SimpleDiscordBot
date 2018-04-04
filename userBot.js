@@ -44,7 +44,7 @@ bot.on('ready', () => {
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
     console.info(timeStampSys + '-- WI POGO Bot IS READY --'); console.log(console.error);
 
-	bot.user.setActivity(`Nightwing Bot`);	
+	bot.user.setActivity(config.botName);	
 
 
 	LoadEmojis();

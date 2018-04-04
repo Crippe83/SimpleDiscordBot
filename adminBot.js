@@ -744,6 +744,12 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 				newChannelName += "_";
 				newChannelName += args[i];				
 			}
+
+			// Check for existing channel with the same name to help avoid duplicates
+			let duplicateChannel = g.channels.find("name",newChannelName);
+
+			if(duplicateChannel) { return c.send("I already have a channel created for that raid look at <#"+config.exListChannel+">") }
+
 							
 
 			// Second Parameter is in the function to allow for user inputed category in the future, would need to adjust above parameter parsing

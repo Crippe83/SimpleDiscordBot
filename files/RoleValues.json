@@ -1,0 +1,118 @@
+{
+    "totalAllowed": 32,
+
+    "localRoles": [
+    "bigflats", 2.5,
+    "dells", 2.5,
+    "grandmarsh", 2.5,
+
+    "denmark", 1.25,
+    "greenbayeast", 1.25,
+    "greenbaywest", 1.25,
+    "greenleaf", 1.25,
+    "howard", 1.25,
+    "humboldt", 1.25,
+    
+    "beaverdam", 2,
+    "horicon", 2,
+    "hustisford", 2,
+    "richwood", 2,
+    
+    "fdl", 1.25,
+    "mtcalvary", 1.25,
+    "oakfield", 1.25,
+    "ripon", 1.25,
+    "waucousta", 1.25,
+    "waupun", 1.25,
+    
+    "jefferson", 1.6,
+    "johnsoncreek", 1.6,
+    "lakemills", 1.6,
+    "palmyra", 1.6,
+    "whitewater", 1.6,
+
+    "mauston", 2.5,
+    "newlisbon", 2.5,
+    "sprague", 2.5,
+    
+    "cleveland", 1.6,
+    "collins", 1.6,
+    "manitowoc", 1.6,
+    "maplegrove", 1.6,
+    "tworivers", 1.6,
+    
+    "browndeer", 1,
+    "eastside", 1,
+    "greendale", 1,
+    "lowerlake", 1,
+    "northside", 1,
+    "tosa", 1,
+    "stallis", 1,
+    
+    "cedarburg", 2,
+    "fredonia", 2,
+    "port", 2,
+    "saukville", 2,
+   
+    "batavia", 1.25,
+    "greenbush", 1.25,
+    "howardgrove", 1.25,
+    "oostburg", 1.25,
+    "plymouth", 1.25,
+    "sheboygan", 1.25,
+    
+    "brookfield", 1,
+    "easttroy", 1,
+    "menomoneefalls", 1,
+    "mukwonago", 1,
+    "muskego", 1,
+    "oconomowoc", 1,
+    "pewaukee", 1,
+    "waukesha", 1,
+    
+    "allenton", 1.25,
+    "erin", 1.25,
+    "germantown", 1.25,
+    "jackson", 1.25,
+    "slinger", 1.25,
+    "westbend", 1.25
+
+    ],
+
+    "countyRoles": [
+        "adams", 8,
+        "brown", 8,        
+        "dodge", 8,        
+        "fdlcounty", 8,        
+        "jeffersoncounty", 8,    
+        "juneau", 8,
+        "manitowoccounty", 8,        
+        "milwaukee", 8,        
+        "ozaukee", 8,        
+        "sheboygancounty", 8,        
+        "waukeshacounty", 8,        
+        "washington", 8,
+        "watertown", 8      
+    ],
+
+
+    "donorRoles": [
+        "donoradams", 8,
+        "donorbrown", 8,
+        "donordodge", 8,
+        "donorfdl", 8,
+        "donorjefferson", 8,
+        "donorjuneau", 8,
+        "donormanitowoc", 8,
+        "donormilwaukee", 8,
+        "donorozaukee", 8,
+        "donorsheboygan", 8,
+        "donorwaukesha", 8,
+        "donorwashington", 8,
+        "donorwatertown", 8,
+        "100", 0,
+        "0", 0,
+        "highiv", 0
+    
+    ]
+}

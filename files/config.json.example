@@ -45,8 +45,8 @@
     "goodColor": "#00FF00",
     "warningColor": "#FF9900",
     "dangerColor": "#FF0000",
-    "botName": "Nightwing Bot",
-    "botAvatar": "https://cdn.discordapp.com/attachments/325321251021258753/406490292532019213/Screenshot_20180126-104255.jpg",
+    "botName": "",
+    "botAvatar": "",
 
     "offlineImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/User-Offline.png",
     "warningImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/User-Warned.png",

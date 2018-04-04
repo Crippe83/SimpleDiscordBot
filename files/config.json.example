@@ -3,7 +3,7 @@
     "botID": "botDiscordID",
     "serverName": "Server Name",
     "serverID": "Server Discord ID",
-    "sqlDB": "raidDataBase.sqlite",
+    "sqlDB": "DataBase.sqlite",
 
     "cmdPrefix": "!",
 

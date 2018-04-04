@@ -167,12 +167,24 @@ setInterval(function(){
 				if(timeNow > dbTime){
 					let channel=bot.guilds.get(config.serverID).channels.find("name", rows[rowNumber].channelName);
 					let role = bot.guilds.get(config.serverID).roles.find("name", rows[rowNumber].channelName);
+					let channelID = channel.id;
 											
 
 					bot.channels.get(config.modlogChannelID).send("Channel "+ rows[rowNumber].channelName + " deleted, raid has ended");
 
+					let exChannel = bot.guilds.get(config.serverID).channels.find("id",config.exListChannel);
+					exChannel.fetchMessages({limit: 100}).then(messages => {
+
+						messages.forEach(function(message) {
+							if(message.content.match(channelID)) { message.delete() }
+						});
+
+					});
+
 					if(channel) { channel.delete() }
 					if(role) {role.delete() }
+
+					
 					
 					// REMOVE DATABASE ENTRY
 					sql.get(`DELETE FROM ex_channels WHERE channelName="${rows[rowNumber].channelName}"`).catch(console.error);

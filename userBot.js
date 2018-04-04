@@ -118,6 +118,7 @@ if(!message.content.startsWith(config.cmdPrefix)) { return }
 					+"`!role <ROLE-NAME> @mention`   \\\u00BB   to assign roles\n"
 					+"`!temprole`   \\\u00BB   ROLES multiple options\n"
 					+"`!temprole <ROLE-NAME> @mention <DAYS>`   \\\u00BB   to assign temporary roles\n"
+					+"`!ex m/d/y time gym name` \\\u00BB to create an ex channel\n"
 					+"`!warn @mention spam/foul/troll/pics/adv`   \\\u00BB   preset warning or:\n"
 					+"`!warn @mention REASON`   \\\u00BB   for custom reasons\n"
 					+"`!mute @mention REASON`   \\\u00BB   to mute an user\n"
@@ -135,6 +136,8 @@ if(!message.content.startsWith(config.cmdPrefix)) { return }
 		}
 		if(!args[0]) {
 				c.send("!join <ROLE-NAME> \\\u00BB Join a rank use this in <#"+config.regionsortingChannelID+">");
+				c.send("!leave <ROLE-NAME>  \\\u00BB Leave a rank use this in <#"+config.regionsortingChannelID+">");
+				c.send("!leaveall   \\\u00BB   leave all joinable ranks");
 				c.send("!raids   \\\u00BB   a link to join the raid server");
 				c.send("!regions   \\\u00BB   list of all joinable areas on our server");
 				c.send("!pd Name or Number  \\\u00BB Useful Pokemon information, \nOptional flags after name or number: A: D: S: L: Shiny");

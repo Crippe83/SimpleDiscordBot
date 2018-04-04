@@ -1210,46 +1210,71 @@ function ParseTime(time)
 }
 
 // ################ WATCH FOR EX REACTIONS
-bot.on('messageReactionAdd', (reaction, user) => {
-	if(reaction.message.channel.id!==config.exListChannel) { return }
-	if(user.bot) { return }
-	if(reaction.emoji.name === "✅")
+bot.on('raw', (event, guild) => {
+	if(event.t==='MESSAGE_REACTION_ADD')
 	{
-		let channelID = ParseChannelName(reaction.message.content);
+		let guild = bot.guilds.find("id",config.serverID);
+		let user = guild.members.find("id",event.d.user_id).user;
+		
+		if(event.d.channel_id!==config.exListChannel) { return }
+		if(user.bot) { return }
+		if(event.d.emoji.name === "✅")
+		{
+			let exChannel = guild.channels.find("id",config.exListChannel);
 
-		let channel = reaction.message.channel.guild.channels.find("id", channelID);
+			exChannel.fetchMessages({limit : 100}).then(messages => {
 
-		let exRole = reaction.message.channel.guild.roles.find("name", channel.name);
+				let message = messages.find("id", event.d.message_id);
 
-		if(!exRole) { return reaction.message.channel.send("That raid appears to have ended") }
+				let channelID = ParseChannelName(message.content);
 
-		let member = reaction.message.channel.guild.members.get(user.id);
+				let channel = guild.channels.find("id", channelID);
 
-		member.addRole(exRole);
+				let exRole = guild.roles.find("name", channel.name);
 
+				if(!exRole) { return reaction.message.channel.send("That raid appears to have ended") }
 
+				let member = guild.members.get(user.id);
+
+				member.addRole(exRole);
+			});
+
+		}
+		
 	}
 });
 
-// ################ WATCH FOR EX REACTION REMOVAL 
-bot.on('messageReactionRemove', (reaction, user) => {
-	if(reaction.message.channel.id!==config.exListChannel) { return }
-	if(user.bot) { return }
-	if(reaction.emoji.name === "✅")
+bot.on('raw', (event, guild) => {
+	if(event.t==='MESSAGE_REACTION_REMOVE')
 	{
-		let channelID = ParseChannelName(reaction.message.content);
+		let guild = bot.guilds.find("id",config.serverID);
+		let user = guild.members.find("id",event.d.user_id).user;
+		
+		if(event.d.channel_id!==config.exListChannel) { return }
+		if(user.bot) { return }
+		if(event.d.emoji.name === "✅")
+		{
+			let exChannel = guild.channels.find("id",config.exListChannel);
 
-		let channel = reaction.message.channel.guild.channels.find("id", channelID);
+			exChannel.fetchMessages({limit : 100}).then(messages => {
 
-		let exRole = reaction.message.channel.guild.roles.find("name", channel.name);
+				let message = messages.find("id", event.d.message_id);
 
-		if(!exRole) { return reaction.message.channel.send("That raid appears to have ended") }
+				let channelID = ParseChannelName(message.content);
 
-		let member = reaction.message.channel.guild.members.get(user.id);
+				let channel = guild.channels.find("id", channelID);
 
-		member.removeRole(exRole);
+				let exRole = guild.roles.find("name", channel.name);
 
+				if(!exRole) { return reaction.message.channel.send("That raid appears to have ended") }
 
+				let member = guild.members.get(user.id);
+
+				member.removeRole(exRole);
+			});
+
+		}
+		
 	}
 });
 	

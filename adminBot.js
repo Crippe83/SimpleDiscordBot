@@ -783,7 +783,11 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 // ########################### LAST SEEN ###############################
 	if(command==="lastseen"){
 		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id)){
-			if(!mentioned){
+			if(args[0]==="server")
+			{
+				CheckServer(g, c);
+			}
+			else if(!mentioned){
 				message.delete();
 				return message.reply("please `@mention` a person you want me to check for activity`");
 			}
@@ -803,6 +807,17 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 				}
 				}).catch(console.error);
 			}
+		}
+		else{
+			return c.send("This command is only available to moderators and administrators");
+		}
+	}
+
+	// CHECK SERVER FOR INACTIVE MEMBERS
+	if(command==="inactive"){
+		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id)){
+			Inactive(g,c);
+			return;
 		}
 		else{
 			return c.send("This command is only available to moderators and administrators");
@@ -1315,6 +1330,111 @@ function IgnoredChannel(channelID)
 		if(channelID===config.ignoredChannels[id]) { return true }
 	}
 	return false;
+}
+
+
+//Check entire server for last seen
+function CheckServer(guild, channel)
+{
+	let guildMembers = [];
+
+	guild.members.map(m => { guildMembers.push(m.user)})
+
+	let timeDelay = 1000;
+
+	let inactiveCount = 0;
+
+	channel.send("I am about to check "+guildMembers.length+" members on this server for their last activity.");
+
+	for(var i = 0; i < guildMembers.length; i++)
+	{
+		let currentMember = guildMembers[i];
+		let currentCount = i+1;
+
+		setTimeout(function(){		
+			sql.get(`SELECT * FROM last_seen WHERE userID="${currentMember.id}"`).then(row => {
+				if(!row){
+					channel.send("User "+currentCount+" of "+guildMembers.length+" "+currentMember+" has not been seen since we started tracking");
+					inactiveCount++;
+				}
+				else {
+					let dateVal=new Date(); dateVal.setTime(row.date); 
+					dateVal=(dateVal.getMonth()+1)+"/"+dateVal.getDate()+"/"+dateVal.getFullYear();
+							
+
+					channel.send("User "+currentCount+"of "+guildMembers.length+" "+currentMember+" was last seen on "+dateVal+" with a message of \""+row.lastMessage+"\"");
+
+				}
+				}).catch(console.error);
+
+				if(currentCount===guildMembers.Length)
+				{
+					channel.send("Finished checking "+guildMembers.length+" members on this server with a total of "+inactiveCount+" users that are completely inactive.");
+				}
+			},timeDelay)
+			
+			timeDelay += 1000;
+		}
+
+}
+
+function Inactive(guild, channel)
+{
+	let guildMembers = [];
+
+	guild.members.map(m => { guildMembers.push(m)})
+
+	let timeDelay = 1000;
+
+	let inactiveCount = 0;
+
+	let userCount = guildMembers.length - 1;
+
+	channel.send("I am about to check "+userCount+" members on this server for their last activity.");
+
+	for(var i = 0; i < userCount; i++)
+	{
+		let currentMember = guildMembers[i];
+		let currentCount = i+1;
+
+		setTimeout(function(){		
+			sql.get(`SELECT * FROM last_seen WHERE userID="${currentMember.user.id}"`).then(row => {
+				if(!row){
+
+					let isDonor = false;
+
+					for(donors in config.donorRoleNames)
+					{
+						let donorRole = guild.roles.find("name",config.donorRoleNames[donors]);
+						isDonor = currentMember.roles.has(donorRole.id);
+						if(isDonor) { break }
+			
+					}
+					if(!isDonor) { 
+						channel.send("User "+currentCount+" of "+userCount+" "+currentMember.user+" has not been seen since we started tracking"); 
+						inactiveCount++;
+					}
+				}
+				else {
+					// DO NOTHING IF THEY ARE ACTIVE 
+					/*let dateVal=new Date(); dateVal.setTime(row.date); 
+					dateVal=(dateVal.getMonth()+1)+"/"+dateVal.getDate()+"/"+dateVal.getFullYear();
+							
+
+					channel.send("User "+currentCount+"of "+userCount+" "+currentMember+" was last seen on "+dateVal+" with a message of \""+row.lastMessage+"\"");*/
+
+				}
+				}).catch(console.error);
+
+				if(currentCount===userCount)
+				{
+					channel.send("Finished checking "+userCount+" members on this server with a total of "+inactiveCount+" users that are completely inactive.");
+				}
+			},timeDelay)
+			
+			timeDelay += 1000;
+		}
+
 }
 
 

@@ -1265,7 +1265,7 @@ bot.on('raw', (event, guild) => {
 
 				let exRole = guild.roles.find("name", channel.name);
 
-				if(!exRole) { return reaction.message.channel.send("That raid appears to have ended") }
+				if(!exRole) { return  }
 
 				let member = guild.members.get(user.id);
 
@@ -1299,7 +1299,7 @@ bot.on('raw', (event, guild) => {
 
 				let exRole = guild.roles.find("name", channel.name);
 
-				if(!exRole) { return reaction.message.channel.send("That raid appears to have ended") }
+				if(!exRole) { return }
 
 				let member = guild.members.get(user.id);
 

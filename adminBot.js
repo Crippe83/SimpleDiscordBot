@@ -165,12 +165,16 @@ setInterval(function(){
 			for(rowNumber="0"; rowNumber<rows.length; rowNumber++){
 				dbTime=rows[rowNumber].endDate;
 				if(timeNow > dbTime){
+					
+					var channelID="kdsalfjkdlsajfdklsafjldsafjdslakfjsdfdas;lkjfl;dsa";
 					let channel=bot.guilds.get(config.serverID).channels.find("name", rows[rowNumber].channelName);
 					let role = bot.guilds.get(config.serverID).roles.find("name", rows[rowNumber].channelName);
-					let channelID = channel.id;
-											
+					if(channel) { channelID = channel.id }
+					
 
 					bot.channels.get(config.modlogChannelID).send("Channel "+ rows[rowNumber].channelName + " deleted, raid has ended");
+					// REMOVE DATABASE ENTRY
+					sql.get(`DELETE FROM ex_channels WHERE channelName="${rows[rowNumber].channelName}"`).catch(console.error);
 
 					let exChannel = bot.guilds.get(config.serverID).channels.find("id",config.exListChannel);
 					exChannel.fetchMessages({limit: 100}).then(messages => {
@@ -186,13 +190,12 @@ setInterval(function(){
 
 					
 					
-					// REMOVE DATABASE ENTRY
-					sql.get(`DELETE FROM ex_channels WHERE channelName="${rows[rowNumber].channelName}"`).catch(console.error);
+					
 				}
 			}
 		}
 	}).catch(console.error);
-},300000);
+},900000);
 // 86400000 = 24hrs
 // 43200000 = 12hrs
 // 21600000 = 6hrs

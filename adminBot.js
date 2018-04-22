@@ -1250,7 +1250,16 @@ bot.on('raw', (event, guild) => {
 	if(event.t==='MESSAGE_REACTION_ADD')
 	{
 		let guild = bot.guilds.find("id",config.serverID);
-		let user = guild.members.find("id",event.d.user_id).user;
+		let user = guild.members.find("id",event.d.user_id);
+
+		if(!user)
+		{
+			return console.log("Could not find user for reaction to EX raid");			
+		}
+		else
+		{
+			user = user.user;
+		}
 		
 		if(event.d.channel_id!==config.exListChannel) { return }
 		if(user.bot) { return }
@@ -1268,7 +1277,7 @@ bot.on('raw', (event, guild) => {
 
 				let exRole = guild.roles.find("name", channel.name);
 
-				if(!exRole) { return  }
+				if(!exRole) { return }
 
 				let member = guild.members.get(user.id);
 
@@ -1284,7 +1293,16 @@ bot.on('raw', (event, guild) => {
 	if(event.t==='MESSAGE_REACTION_REMOVE')
 	{
 		let guild = bot.guilds.find("id",config.serverID);
-		let user = guild.members.find("id",event.d.user_id).user;
+		let user = guild.members.find("id",event.d.user_id);
+
+		if(!user)
+		{
+			return console.log("Could not find user for reaction to EX raid");			
+		}
+		else
+		{
+			user = user.user;
+		}
 		
 		if(event.d.channel_id!==config.exListChannel) { return }
 		if(user.bot) { return }

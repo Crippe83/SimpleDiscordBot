@@ -105,6 +105,10 @@ bot.on("guildMemberRemove", member => {
 // DATABASE TIMER FOR TEMPORARY ROLES
 //
 setInterval(function(){
+	
+	// CREATE DATABASE TABLE 
+	sql.run("CREATE TABLE IF NOT EXISTS temporary_roles (userID TEXT, temporaryRole TEXT, startDate TEXT, endDate TEXT, addedBy TEXT)").catch(console.error);
+	
 	let CurrTime=new Date();
 	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}

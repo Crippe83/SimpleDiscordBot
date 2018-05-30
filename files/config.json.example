@@ -13,6 +13,8 @@
     "timeOutRoleName": "time out",
     "verifiedRoleName": "pic_verified",
     "EXRaidCategory": "ex raids",
+    "faqChannel":"faq",
+    "researchChannel":"research",
              
 	
     "rulesChannelID": "",

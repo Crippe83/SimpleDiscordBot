@@ -665,6 +665,10 @@
     "types": [
       "Grass",
       "Psychic"
+    ],
+    "alolantypes": [
+      "Grass",
+      "Dragon"
     ]
   },
   "104": {

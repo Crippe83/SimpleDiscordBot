@@ -193,7 +193,7 @@
   "19": {
     "attack": 103,
     "defense": 70,
-    "stamina": 60,
+    "stamina": 60,    
     "type1": "normal",
     "legendary": false,
     "generation": 1,
@@ -1070,8 +1070,12 @@
   },
   "103": {
     "attack": 233,
-    "defense": 161,
+    "defense": 158,
     "stamina": 190,
+    "alolan":true,
+    "alolanattack":230,
+    "alolandefense":158,
+    "alolanstamina":190,
     "type1": "grass",
     "type2": "psychic",
     "legendary": false,

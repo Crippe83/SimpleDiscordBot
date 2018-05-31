@@ -20,6 +20,9 @@ I wrote this long time ago for **SeattlePokeMaps**, but recently with the releas
 2) Discord.js (`npm install discord.js` « should be `ver 11.3+`) 
 
 3) SQLite (`npm install sqlite`) 
+   ontime (`npm install ontime`)
+   request (`npm install request`)
+
 
 4) Bot Token: https://discordapp.com/developers/applications/me  
 

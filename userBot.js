@@ -140,6 +140,7 @@ if(!message.content.startsWith(config.cmdPrefix)) { return }
 					+"`!temprole`   \\\u00BB   ROLES multiple options\n"
 					+"`!temprole <ROLE-NAME> @mention <DAYS>`   \\\u00BB   to assign temporary roles\n"
 					+"`!warn @mention spam/foul/troll/pics/adv`   \\\u00BB   preset warning or:\n"
+					+"`!timeout @mention Put someone on a time out"
 					+"`!warn @mention REASON`   \\\u00BB   for custom reasons\n"
 					+"`!mute @mention REASON`   \\\u00BB   to mute an user\n"
 					+"`!unmute @mention`   \\\u00BB   to unmute an user\n"
@@ -156,10 +157,12 @@ if(!message.content.startsWith(config.cmdPrefix)) { return }
 		}
 		if(!args[0]) {
 				c.send("!join <ROLE-NAME> \\\u00BB Join a rank use this in <#"+config.regionsortingChannelID+">");
-				c.send("!raids   \\\u00BB   a link to join the raid server");
+				c.send("!raid time target description   \\\u00BB   Create a raid post with the specified start time, raid boss and location/description");
 				c.send("!regions   \\\u00BB   list of all joinable areas on our server");
-				c.send("!pd Name or Number  \\\u00BB Useful Pokemon information, \nOptional flags after name or number: Attack Defense Stamina Level All or Shiny");
+				c.send("!pd Name or Number  \\\u00BB Useful Pokemon information, \nOptional flags after name or number: Attack Defense Stamina Level All Shiny or Alolan");
 				c.send("!appraise Name or Number  \\\u00BB This will print a string that you can paste in to the pokemon search in game to spit out all possible CP values");
+				c.send("!cp Pokemon CPValue              \\\u00BB    Prints out a list of possible Level and IV ranges for a pokemon with a specific CP value");
+				c.send("!research Description        \\\u00BB   Posts a research description/location to <#"+config.researchChannel+">");
 				return; 
 		}
 		

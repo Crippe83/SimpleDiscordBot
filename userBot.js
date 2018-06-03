@@ -6,6 +6,7 @@ const raidList=require('./files/RaidList.json');
 const ontime = require('ontime');
 const Emojis = require("./Emojis.js");
 const request = require('request');
+const welcomeMessage=require('./files/WelcomeMessage.json');
 
 
 const emojis = new Emojis.DiscordEmojis();
@@ -43,6 +44,28 @@ bot.on('ready', () => {
 	emojis.Load(bot);	
 	InitializeRoles();
 	InitializePokeDex();	
+	
+});
+
+bot.on('guildMemberAdd', member => {
+	
+	if(member.guild.id!=config.serverID) { return }
+	let embedMsg = {
+		'color':welcomeMessage.color,
+		'description': welcomeMessage.description,
+		'footer': welcomeMessage.footer,			
+		'thumbnail':{
+			"url": welcomeMessage.thumbnail
+		},
+		'title':welcomeMessage.title,
+		'fields':welcomeMessage.fields
+	};
+	let plainText = welcomeMessage.plaintext;
+	plainText = plainText.replace("%user%",member.user.username);
+	member.send(plainText).then(message =>
+	{
+		return member.send({embed: embedMsg}).catch(console.error);
+	});
 	
 });
 

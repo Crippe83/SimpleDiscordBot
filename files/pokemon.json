@@ -122,11 +122,19 @@
     "name": "Rattata",
     "types": [
       "Normal"
+    ],
+    "alolantypes": [
+      "Dark",
+      "Normal"
     ]
   },
   "20": {
     "name": "Raticate",
     "types": [
+      "Normal"
+    ],
+    "alolantypes": [
+      "Dark",
       "Normal"
     ]
   },
@@ -166,18 +174,30 @@
     "name": "Raichu",
     "types": [
       "Electric"
+    ],
+    "alolantypes": [
+      "Electric",
+      "Psychic"
     ]
   },
   "27": {
     "name": "Sandshrew",
     "types": [
       "Ground"
+    ],
+    "alolantypes": [
+      "Ice",
+      "Steel"
     ]
   },
   "28": {
     "name": "Sandslash",
     "types": [
       "Ground"
+    ],
+    "alolantypes": [
+      "Ice",
+      "Steel"
     ]
   },
   "29": {
@@ -234,12 +254,19 @@
     "name": "Vulpix",
     "types": [
       "Fire"
+    ],
+    "alolantypes": [
+      "Ice"
     ]
   },
   "38": {
     "name": "Ninetales",
     "types": [
       "Fire"
+    ],
+    "alolantypes": [
+      "Ice",
+      "Fairy"
     ]
   },
   "39": {
@@ -323,24 +350,38 @@
     "name": "Diglett",
     "types": [
       "Ground"
+    ],
+    "alolantypes": [
+      "Ground",
+      "Steel"
     ]
   },
   "51": {
     "name": "Dugtrio",
     "types": [
       "Ground"
+    ],
+    "alolantypes": [
+      "Ground",
+      "Steel"
     ]
   },
   "52": {
     "name": "Meowth",
     "types": [
       "Normal"
+    ],
+    "alolantypes": [
+      "Dark"
     ]
   },
   "53": {
     "name": "Persian",
     "types": [
       "Normal"
+    ],
+    "alolantypes": [
+      "Dark"
     ]
   },
   "54": {
@@ -474,6 +515,10 @@
     "types": [
       "Rock",
       "Ground"
+    ],
+    "alolantypes": [
+      "Rock",
+      "Electric"
     ]
   },
   "75": {
@@ -481,6 +526,10 @@
     "types": [
       "Rock",
       "Ground"
+    ],
+    "alolantypes": [
+      "Rock",
+      "Electric"
     ]
   },
   "76": {
@@ -488,6 +537,10 @@
     "types": [
       "Rock",
       "Ground"
+    ],
+    "alolantypes": [
+      "Rock",
+      "Electric"
     ]
   },
   "77": {
@@ -568,12 +621,20 @@
     "name": "Grimer",
     "types": [
       "Poison"
+    ],
+    "alolantypes": [
+      "Poison",
+      "Dark"
     ]
   },
   "89": {
     "name": "Muk",
     "types": [
       "Poison"
+    ],
+    "alolantypes": [
+      "Poison",
+      "Dark"
     ]
   },
   "90": {
@@ -681,6 +742,10 @@
     "name": "Marowak",
     "types": [
       "Ground"
+    ],
+    "alolantypes": [
+      "Fire",
+      "Ghost"
     ]
   },
   "106": {

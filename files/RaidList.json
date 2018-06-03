@@ -14,7 +14,11 @@
         "metapod",
         "bayleef",
         "quilava",
-        "croconaw"
+        "croconaw",
+        "anorith",
+        "lileep",
+        "kabuto",
+        "omanyte"
     ],
 
     "tier2": [
@@ -38,7 +42,10 @@
         "magmar",
         "manectric",
         "primeape",
-        "combusken"
+        "combusken",
+        "nosepass",
+        "magcargo",
+        "sudowoodo"
     ],
 
     "tier3": [
@@ -63,7 +70,10 @@
         "claydol",
         "hitmonlee",
         "hitmonchan",
-        "breloom"
+        "breloom",
+        "solrock",
+        "lunatone",
+        "shuckle"
     ],
 
     "tier4": [

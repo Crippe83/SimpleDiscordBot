@@ -32,6 +32,7 @@ bot.on('ready', () => {
 	// CREATE DATABASE TABLE 
 	sql.run("CREATE TABLE IF NOT EXISTS last_seen (userID TEXT, lastMessage TEXT, date TEXT)").catch(console.error);
 	sql.run("CREATE TABLE IF NOT EXISTS ex_channels (channelName TEXT, endDate TEXT)").catch(console.error);
+	
 });
 
 
@@ -66,8 +67,7 @@ bot.on("guildBanAdd", (guild,user) => {
 				'thumbnail': {'url': config.bannedImg},
 				'description': '**UserID**: `'+minionID+'`\n**UserTag**: <@'+minionID+'>\n'
 					+'**Reason**: '+reason+'\n**By**: <@'+masterID+'>\n\n**On**: '+timeStamp
-			};
-			console.log(timeStampSys+"[ADMIN] [BANNED] \""+minionName+"\" ("+minionID+") was banned from "+guild.name);
+			};			
 			return bot.channels.get(config.modlogChannelID).send({embed: embedMSG}).catch(console.error);
 		})
 		.catch(console.error)
@@ -82,8 +82,7 @@ bot.on("guildMemberAdd", member => {
 
 	let guild=member.guild; let user=member.user;
 	// MAKE SURE MESSAGE IS IN PROPER SERVER
-	if(guild.id!=config.serverID) { return }
-	console.log(timeStampSys+"[ADMIN] [JOIN] \""+user.username+"\" ("+user.id+") has joined server: "+guild.name);
+	if(guild.id!=config.serverID) { return }	
 	bot.channels.get(config.modlogChannelID).send(timeStampSys+" \""+user.username+"\" ("+user.id+") has joined server: "+guild.name);
 });
 
@@ -95,8 +94,7 @@ bot.on("guildMemberRemove", member => {
 
 	let g=member.guild; let u=member.user;
 	// MAKE SURE MESSAGE IS IN PROPER SERVER
-	if(g.id!=config.serverID) { return }
-	console.log(timeStampSys+"[ADMIN] [QUIT] \""+u.username+"\" ("+u.id+") has left server: "+g.name);
+	if(g.id!=config.serverID) { return }	
 	bot.channels.get(config.modlogChannelID).send(timeStampSys+" \""+u.username+"\" ("+u.id+") has left server: "+g.name);
 });
 
@@ -105,10 +103,6 @@ bot.on("guildMemberRemove", member => {
 // DATABASE TIMER FOR TEMPORARY ROLES
 //
 setInterval(function(){
-	
-	// CREATE DATABASE TABLE 
-	sql.run("CREATE TABLE IF NOT EXISTS temporary_roles (userID TEXT, temporaryRole TEXT, startDate TEXT, endDate TEXT, addedBy TEXT)").catch(console.error);
-	
 	let CurrTime=new Date();
 	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
@@ -123,8 +117,7 @@ setInterval(function(){
 			for(rowNumber="0"; rowNumber<rows.length; rowNumber++){
 				dbTime=rows[rowNumber].endDate; daysLeft=(dbTime*1)-(timeNow*1);
 				if(daysLeft<1){
-					member=bot.guilds.get(config.serverID).members.get(rows[rowNumber].userID); if(!member){ member.user.username="<@"+rows[rowNumber].userID+">"; member.id=""; }
-					console.log(timeStampSys+"[ADMIN] [TEMPORARY-ROLE] \""+member.user.username+"\" ("+member.id+") have lost their role: "+rows[rowNumber].temporaryRole+"... time EXPIRED");
+					member=bot.guilds.get(config.serverID).members.get(rows[rowNumber].userID); if(!member){ member.user.username="<@"+rows[rowNumber].userID+">"; member.id=""; }					
 					bot.channels.get(config.modlogChannelID).send("⚠ <@"+rows[rowNumber].userID+"> have **lost** their role of: **"
 						+rows[rowNumber].temporaryRole+"** - their **temporary** access has __EXPIRED__ 😭 ").catch(console.error);
 					
@@ -161,24 +154,30 @@ setInterval(function(){
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
 	
 	let timeNow=new Date().getTime(); let dbTime=""; let daysLeft="";
+
+	let timeDelay = 5000;
 	sql.all(`SELECT * FROM ex_channels`).then(rows => {
 		if (!rows) {
 			return console.info("No EX channels exist");
 		}
-		else {
+		else 
+		{
+
 			for(rowNumber="0"; rowNumber<rows.length; rowNumber++){
 				dbTime=rows[rowNumber].endDate;
-				if(timeNow > dbTime){
-					
+				let currentRow = rowNumber;
+				if(timeNow > dbTime)
+				{
+					setTimeout(function(){
 					var channelID="kdsalfjkdlsajfdklsafjldsafjdslakfjsdfdas;lkjfl;dsa";
-					let channel=bot.guilds.get(config.serverID).channels.find("name", rows[rowNumber].channelName);
-					let role = bot.guilds.get(config.serverID).roles.find("name", rows[rowNumber].channelName);
+					let channel=bot.guilds.get(config.serverID).channels.find("name", rows[currentRow].channelName);
+					let role = bot.guilds.get(config.serverID).roles.find("name", rows[currentRow].channelName);
 					if(channel) { channelID = channel.id }
 					
 
-					bot.channels.get(config.modlogChannelID).send("Channel "+ rows[rowNumber].channelName + " deleted, raid has ended");
+					bot.channels.get(config.modlogChannelID).send("Channel "+ rows[currentRow].channelName + " deleted, raid has ended");
 					// REMOVE DATABASE ENTRY
-					sql.get(`DELETE FROM ex_channels WHERE channelName="${rows[rowNumber].channelName}"`).catch(console.error);
+					sql.get(`DELETE FROM ex_channels WHERE channelName="${rows[currentRow].channelName}"`).catch(console.error);
 
 					let exChannel = bot.guilds.get(config.serverID).channels.find("id",config.exListChannel);
 					exChannel.fetchMessages({limit: 100}).then(messages => {
@@ -187,19 +186,17 @@ setInterval(function(){
 							if(message.content.match(channelID)) { message.delete() }
 						});
 
+						if(channel) { channel.delete() }
+						if(role) {role.delete() }
+
 					});
-
-					if(channel) { channel.delete() }
-					if(role) {role.delete() }
-
-					
-					
-					
+					timeDelay += 60000;
+				},timeDelay);
 				}
 			}
 		}
 	}).catch(console.error);
-},900000);
+},300000);
 // 86400000 = 24hrs
 // 43200000 = 12hrs
 // 21600000 = 6hrs
@@ -295,9 +292,9 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 				'description': 'You are being **WARNED** about an __invite__ code or link... '
 					+'Advertising of other servers is **NOT** allowed in our server.\n**OffenseDate**: '+timeStamp
 			};
-			console.log(timeStampSys+"[ADMIN] [INVITE-TXT] \""+m.user.username+"\" ("+m.id+") said: "+message.content);
+			bot.channels.get(config.modlogChannelID).send(timeStampSys+"[ADMIN] [INVITE-TXT] \""+m.user.username+"\" ("+m.id+") said: "+message.content);
 			m.send({embed: embedMSG}).catch(console.error);
-			return m.send("Please **Read/Review Our Rules** at: <#"+config.rulesChannelID+"> ... in order to avoid Mute/Kick/Ban");
+			return m.send("Please **Read/Review Our Rules** at: <#"+config.rulesChannelID+"> ... in order to avoid Mute/Kick/Ban").catch(console.error);
 		}
 	}
 	
@@ -370,6 +367,8 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 			}
 			if(mentioned){
 				let gMember=g.members.get(mentioned.id);
+
+				if(!gMember) { return c.send("I could not find "+mentioned) }
 				
 				let joinedAt=""; let joinedDT=""; let joinedDate=""; let mRolesName=""; let userRoleCount=""; let roleNames="";
 				
@@ -436,7 +435,7 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 			let amt=parseInt(msg.split(" ").slice(1))+1;
 			let deleted=amt-1;
 			c.fetchMessages({ limit: amt })
-			.then(messages => c.bulkDelete(amt), console.log(timeStampSys+"[ADMIN] [DELETE] \""+m.user.username+"\" deleted: "+deleted+" messages from: "+g.name+" in: #"+c.name)).catch(console.error);
+			.then(messages => c.bulkDelete(amt)).catch(console.error);
 			return;
 		}
 		else {
@@ -672,8 +671,7 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 						sql.run("INSERT INTO temporary_roles (userID, temporaryRole, startDate, endDate, addedBy) VALUES (?, ?, ?, ?, ?)", 
 							[mentioned.id, daRoles, curDate, finalDate, m.id]);
 						let theirRole=g.roles.find('name', daRoles);
-						mentioned.addRole(theirRole).catch(console.error);
-						console.log(timeStampSys+"[ADMIN] [TEMPORARY-ROLE] \""+mentioned.user.username+"\" ("+mentioned.id+") was given role: "+daRoles+" by: "+m.user.username+" ("+m.id+")");
+						mentioned.addRole(theirRole).catch(console.error);						
 						return c.send("🎉 "+mentioned+" has been given a **temporary** role of: **"+daRoles+"**, enjoy! They will lose this role on: `"+finalDateDisplay+"`");
 					}
 					else {
@@ -690,7 +688,7 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 
 // ######################### CREATE EX CHANNEL #########################
 	if(command==="ex"){
-		if(m.roles.has(ModR.id) || m.roles.hasj(AdminR.id)){
+		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id)){
 
 			sql.run("CREATE TABLE IF NOT EXISTS ex_channels (channelName TEXT, endDate TEXT)").catch(console.error);
 			
@@ -763,13 +761,11 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 				newChannelName += "_";
 				newChannelName += args[i];				
 			}
-
+			
 			// Check for existing channel with the same name to help avoid duplicates
 			let duplicateChannel = g.channels.find("name",newChannelName);
 
 			if(duplicateChannel) { return c.send("I already have a channel created for that raid look at <#"+config.exListChannel+">") }
-
-							
 
 			// Second Parameter is in the function to allow for user inputed category in the future, would need to adjust above parameter parsing
 			CreateEXChannel(newChannelName,config.EXRaidCategory, g, c);
@@ -823,7 +819,11 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 	// CHECK SERVER FOR INACTIVE MEMBERS
 	if(command==="inactive"){
 		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id)){
-			Inactive(g,c);
+			var kick = false;
+			var warn = false;
+			if(args[0]==="kick") { kick = true }
+			if(args[0]==="warn") { warn = true }
+			Inactive(g,c, kick, warn);
 			return;
 		}
 		else{
@@ -834,16 +834,20 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 // ############################# VERIFY ###################################
 	if(command==="verify"){
 		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id) || m.roles.has(RaidLeaderR.id)){
-			let mentioned = message.mentions.members.first();
-			if(!mentioned){
+			if(mentioned.length <= 0){
 				message.delete();
 				return message.reply("please `@mention` a person you want me to mark as verified`");
 			}
-			else {				
+			else 
+			{				
 				let verifiedRole = g.roles.find("name",config.verifiedRoleName);
-				mentioned.addRole(verifiedRole).catch(console.error);
-				return c.send(mentioned+" Your pictures have been approved, please proceed to the <#"+config.rulesChannelID+">");
+				message.mentions.members.forEach(function(mentioned) {
+					mentioned.addRole(verifiedRole).catch(console.error);
+					c.send(mentioned+" Your pictures have been approved, please proceed to the <#"+config.rulesChannelID+">");					
+					let pause = true;
+				});
 				
+				return;
 			}
 		}
 		else{
@@ -922,8 +926,7 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 						'description': '**UserID**: '+mentioned.id+'\n**UserTag**: '+mentioned+'\n'
 							+'**Channel**: <#'+c.id+'>\n**Reason**: '+msgReasons+'\n\n**By**: '+m.user+'\n**On**: '+timeStamp
 					};
-					bot.channels.get(config.modlogChannelID).send({embed: embedMSG}).catch(console.error);
-					console.log(timeStampSys+"[ADMIN] [MUTE] \""+mentioned.username+"\" ("+mentioned.id+") was MUTED in guild: "+g.name+", channel: #"+c.name+" due to: "+msgReasons);
+					bot.channels.get(config.modlogChannelID).send({embed: embedMSG}).catch(console.error);					
 					return c.send("⚠ "+mentioned+" has been 🤐 **MUTED** for: **"+msgReasons+'**');
 				}).catch(console.error);
 			}
@@ -936,48 +939,77 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 	
 	
 	
-// ############################## Time Out ##############################
-	if(command==="pidgey" || command==="timeout"){
-		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id)){
+// ############################## Time Out Role ##############################
+if(command==="pidgey" || command==="timeout"){
+	if(m.roles.has(ModR.id) || m.roles.has(AdminR.id) || m.id===config.ownerID){
 
-			if(!mentioned){				
-				return message.reply("please `@mention` a person you want me to discipline");
-			}
-			else {								
-				let gMember=g.members.get(mentioned.id);
-
-				let mRolesName=""; let userRoleCount=""; let roleNames="";
-
-				mRolesName=gMember.roles.map(r => r.name); mRolesName=mRolesName.slice(1); userRoleCount=mRolesName.length; if(!mRolesName){userRoleCount=0} roleNames="NONE "; 
-				if(userRoleCount!==0){ roleNames=mRolesName }
-								
-				for(i = 0; i < userRoleCount; i++)
-				{
-					var remove = false;
-					let currentRole = g.roles.find("name",roleNames[i]);	
-
-					if(countyRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
-					if(localRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
-
-					if(remove)
-					{
-						gMember.removeRole(currentRole).catch(console.error);
-					}
-				}
-								
-				gMember.removeRole(config.rulesAgreedRole);
-				
-				let timeOutRole = g.roles.find("name", config.timeOutRoleName);
-				gMember.addRole(timeOutRole);
-
-				return c.send(mentioned+"now has the role of "+config.timeOutRoleName);
-			}
+		if(!mentioned){				
+			return message.reply("please `@mention` a person you want me to discipline");
 		}
-		else {
-			message.delete();
-			return message.reply("you are **NOT** allowed to use this command!").catch(console.error); 
+		else {								
+			let gMember=g.members.get(mentioned.id);
+
+			let mRolesName=""; let userRoleCount=""; let roleNames="";
+
+			mRolesName=gMember.roles.map(r => r.name); mRolesName=mRolesName.slice(1); userRoleCount=mRolesName.length; if(!mRolesName){userRoleCount=0} roleNames="NONE "; 
+			if(userRoleCount!==0){ roleNames=mRolesName }
+							
+			for(i = 0; i < userRoleCount; i++)
+			{
+				var remove = false;
+				let currentRole = g.roles.find("name",roleNames[i]);	
+
+				if(donorRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
+				if(countyRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
+				if(localRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
+
+				if(remove)
+				{
+					gMember.removeRole(currentRole).catch(console.error);
+				}
+			}
+							
+			gMember.removeRole(config.rulesAgreedRole);
+			
+			let timeOutRole = g.roles.find("name", config.timeOutRoleName);
+			gMember.addRole(timeOutRole);
+
+			CreateTimeoutChannel(mentioned,g,c);
+
+			return c.send(mentioned+" now has the role of "+config.timeOutRoleName);
+			
 		}
 	}
+	else {
+		message.delete();
+		return message.reply("you are **NOT** allowed to use this command!").catch(console.error); 
+	}
+}
+
+// ############################## Remove Time Out Role ##############################
+if(command==="unpidgey" || command==="restore"){
+	if(m.roles.has(ModR.id) || m.roles.has(AdminR.id) || m.id===config.ownerID){
+
+		if(!mentioned){				
+			return message.reply("please `@mention` a person you want me to remove from time out");
+		}
+		else {								
+			let gMember=g.members.get(mentioned.id);
+			let timeOutRole = g.roles.find("name", config.timeOutRoleName);
+		
+							
+			gMember.removeRole(timeOutRole);
+								
+
+			return DeleteTimeoutChannel(mentioned,g,c);
+			
+		}
+	}
+	else {
+		message.delete();
+		return message.reply("you are **NOT** allowed to use this command!").catch(console.error); 
+	}
+}
 	
 
 // ############################## MUTE ##############################
@@ -1006,8 +1038,7 @@ if(command==="mute"){
 					'description': '**UserID**: '+mentioned.id+'\n**UserTag**: '+mentioned+'\n'
 						+'**Channel**: <#'+c.id+'>\n**Reason**: '+msgReasons+'\n\n**By**: '+m.user+'\n**On**: '+timeStamp
 				};
-				bot.channels.get(config.modlogChannelID).send({embed: embedMSG}).catch(console.error);
-				console.log(timeStampSys+"[ADMIN] [MUTE] \""+mentioned.username+"\" ("+mentioned.id+") was MUTED in guild: "+g.name+", channel: #"+c.name+" due to: "+msgReasons);
+				bot.channels.get(config.modlogChannelID).send({embed: embedMSG}).catch(console.error);				
 				return c.send("⚠ "+mentioned+" has been 🤐 **MUTED** for: **"+msgReasons+'**');
 			}).catch(console.error);
 		}
@@ -1059,8 +1090,7 @@ if(command==="unmute"){
 					if(msgReasons.indexOf(" ")===-1){msgReasons="Check yourself!"}
 					else{msgReasons=msgReasons.trim();msgReasons=msgReasons.slice(msgReasons.indexOf(" "));msgReasons=msgReasons.trim();}}
 				
-				mentioned=message.mentions.users.first();
-				console.log(timeStampSys+"[ADMIN] [KICK] \""+mentioned.username+"\" ("+mentioned.id+") was KICKED from guild: "+g.name+", channel: #"+c.name+" due to: "+msgReasons);
+				mentioned=message.mentions.users.first();				
 				c.send("⚠ "+mentioned+" has been 👢 __**kicked**__ from server for: **"+msgReasons+"**").catch(console.error);
 				embedMSG={
 					'color': 0xFF0000,
@@ -1105,7 +1135,7 @@ if(command==="unmute"){
 					if(msgReasons.indexOf(" ")===-1){msgReasons="Check yourself!"}
 					else{msgReasons=msgReasons.trim();msgReasons=msgReasons.slice(msgReasons.indexOf(" "));msgReasons=msgReasons.trim();}}
 				
-				console.log(timeStampSys+"[ADMIN] [BAN] \""+mentioned.username+"\" ("+mentioned.id+") was BANNED from guild: "+g.name+", channel: #"+c.name+" due to: "+msgReasons);
+				
 				c.send("⛔ "+mentioned+" has been __**banned**__ 🔨 from server for: **"+msgReasons+"**").catch(console.error);
 				embedMSG={
 					'color': 0xFF0000,
@@ -1134,6 +1164,58 @@ if(command==="unmute"){
 		}
 	}	
 });
+
+function CreateTimeoutChannel(user, guild, msgChannel)
+{
+	
+	let newCategory = guild.channels.find("name", config.timeOutCategoryName);
+
+	let channelName = user.username + "_time_out";
+	channelName.replace(" ", "_");
+	
+	// CREATE CHANNEL
+	guild.createChannel(channelName, "text").then(channel => {
+		// MOVE CHANNEL TO REQUESTED CATEGORY
+		channel.setParent(newCategory);	
+		// HIDE THE CHANNEL FROM @EVERYONE IN ORDER TO HAVE A JOINABLE LOBBY
+		let everyone = guild.roles.find("name", "@everyone");
+		let moderator = guild.roles.find("name", config.modRoleName);
+		let admin = guild.roles.find("name", config.adminRoleName);
+		channel.overwritePermissions(everyone, {READ_MESSAGES: false, READ_MESSAGE_HISTORY: false}).then(channel => {
+			channel.overwritePermissions(user, {READ_MESSAGES: true, READ_MESSAGE_HISTORY: true, SEND_MESSAGES: true}).then(channel => {
+				channel.send(user+" you are in this channel because you have violated one of the server rules.  Explain yourself or face removal")})});
+
+		channel.overwritePermissions(moderator,{READ_MESSAGES: true, READ_MESSAGE_HISTORY: true, SEND_MESSAGES: true, });
+		channel.overwritePermissions(admin,{READ_MESSAGES: true, READ_MESSAGE_HISTORY: true, SEND_MESSAGES: true, });
+				
+		
+		return msgChannel.send("I have created channel <#"+channel.id+">"+" for user"+user);
+	});
+	
+}
+
+function DeleteTimeoutChannel(user, guild, msgChannel)
+{
+		
+
+	let channelName = user.username + "_time_out";
+	channelName.replace(" ", "_");
+	channelName = channelName.toLowerCase();
+
+	let timeOutChannel = guild.channels.find("name", channelName);
+	
+	if(timeOutChannel)
+	{
+		bot.channels.get(config.modlogChannelID).send("I am removing "+user+"from timeout and deleting "+timeOutChannel);
+		timeOutChannel.delete();
+	}
+	else
+	{
+		bot.channels.get(config.modlogChannelID).send("I am removing "+user+"from timeout but couldn't find their channel to delete");
+	}
+	
+}
+
 
 //Values stored in an array alternating between title and value, pull them to two separate arrays
 function InitializeRoles()
@@ -1258,7 +1340,7 @@ bot.on('raw', (event, guild) => {
 
 		if(!user)
 		{
-			return console.log("Could not find user for reaction to EX raid");			
+			return console.log("Could not find user for reaction to EX raid with a user ID of: "+event.d.user_id);			
 		}
 		else
 		{
@@ -1357,57 +1439,11 @@ function IgnoredChannel(channelID)
 	return false;
 }
 
-
-//Check entire server for last seen
 function CheckServer(guild, channel)
 {
 	let guildMembers = [];
 
 	guild.members.map(m => { guildMembers.push(m.user)})
-
-	let timeDelay = 1000;
-
-	let inactiveCount = 0;
-
-	channel.send("I am about to check "+guildMembers.length+" members on this server for their last activity.");
-
-	for(var i = 0; i < guildMembers.length; i++)
-	{
-		let currentMember = guildMembers[i];
-		let currentCount = i+1;
-
-		setTimeout(function(){		
-			sql.get(`SELECT * FROM last_seen WHERE userID="${currentMember.id}"`).then(row => {
-				if(!row){
-					channel.send("User "+currentCount+" of "+guildMembers.length+" "+currentMember+" has not been seen since we started tracking");
-					inactiveCount++;
-				}
-				else {
-					let dateVal=new Date(); dateVal.setTime(row.date); 
-					dateVal=(dateVal.getMonth()+1)+"/"+dateVal.getDate()+"/"+dateVal.getFullYear();
-							
-
-					channel.send("User "+currentCount+"of "+guildMembers.length+" "+currentMember+" was last seen on "+dateVal+" with a message of \""+row.lastMessage+"\"");
-
-				}
-				}).catch(console.error);
-
-				if(currentCount===guildMembers.Length)
-				{
-					channel.send("Finished checking "+guildMembers.length+" members on this server with a total of "+inactiveCount+" users that are completely inactive.");
-				}
-			},timeDelay)
-			
-			timeDelay += 1000;
-		}
-
-}
-
-function Inactive(guild, channel)
-{
-	let guildMembers = [];
-
-	guild.members.map(m => { guildMembers.push(m)})
 
 	let timeDelay = 1000;
 
@@ -1423,30 +1459,17 @@ function Inactive(guild, channel)
 		let currentCount = i+1;
 
 		setTimeout(function(){		
-			sql.get(`SELECT * FROM last_seen WHERE userID="${currentMember.user.id}"`).then(row => {
+			sql.get(`SELECT * FROM last_seen WHERE userID="${currentMember.id}"`).then(row => {
 				if(!row){
-
-					let isDonor = false;
-
-					for(donors in config.donorRoleNames)
-					{
-						let donorRole = guild.roles.find("name",config.donorRoleNames[donors]);
-						isDonor = currentMember.roles.has(donorRole.id);
-						if(isDonor) { break }
-			
-					}
-					if(!isDonor) { 
-						channel.send("User "+currentCount+" of "+userCount+" "+currentMember.user+" has not been seen since we started tracking"); 
-						inactiveCount++;
-					}
+					channel.send("User "+currentCount+" of "+userCount+" "+currentMember+" has not been seen since we started tracking");
+					inactiveCount++;
 				}
 				else {
-					// DO NOTHING IF THEY ARE ACTIVE 
-					/*let dateVal=new Date(); dateVal.setTime(row.date); 
+					let dateVal=new Date(); dateVal.setTime(row.date); 
 					dateVal=(dateVal.getMonth()+1)+"/"+dateVal.getDate()+"/"+dateVal.getFullYear();
 							
 
-					channel.send("User "+currentCount+"of "+userCount+" "+currentMember+" was last seen on "+dateVal+" with a message of \""+row.lastMessage+"\"");*/
+					channel.send("User "+currentCount+"of "+userCount+" "+currentMember+" was last seen on "+dateVal+" with a message of \""+row.lastMessage+"\"");
 
 				}
 				}).catch(console.error);
@@ -1460,6 +1483,149 @@ function Inactive(guild, channel)
 			timeDelay += 1000;
 		}
 
+}
+
+
+function Inactive(guild, channel, kick, warn)
+{
+	let guildMembers = [];
+	
+
+	guild.fetchMembers().then(liveGuild => {
+		liveGuild.members.map(m => {guildMembers.push(m)})
+			
+
+		let timeDelay = 1000;
+
+		let inactiveCount = 0;
+
+		let userCount = guildMembers.length;
+
+		channel.send("I am about to check "+userCount+" members on this server for their last activity.");
+
+		embedMSG={
+			'color': 0xFF0000,
+			'title': 'YOU HAVE BEEN KICKED',
+			'thumbnail': {'url': config.kickedImg},
+			'description': '**From Server**: '+config.serverName+'\n**Reason**: You were inactive, if you feel this was in error contact us for a reinvite\nSee the pinned post in the Facebook group for more info\nhttps://www.facebook.com/WisconsinPOGODiscord/'
+		};
+
+		let warnembedMSG={
+			'color': 0xFF0000,
+			'title': 'YOU HAVE BEEN WARNED',
+			'thumbnail': {'url': config.warningImg},
+			'description': '**From Server**: '+config.serverName+'\n**Reason**: You are currently inactive, we will be removing people for inactivity in the near future.  If you do not say anything soon you will be kicked'
+		};
+
+		for(var i = 0; i < userCount; i++)
+		{
+			let currentMember = guildMembers[i];
+			let currentCount = i+1;
+
+			setTimeout(function()
+			{		
+				sql.get(`SELECT * FROM last_seen WHERE userID="${currentMember.user.id}"`).then(row => {
+					if(!row)
+					{					
+						if(!InactiveExempt(currentMember,guild)) { 
+												
+							if(kick)
+							{							
+								
+								bot.users.get(currentMember.user.id).send({embed: embedMSG}).catch(console.error);
+								bot.channels.get(config.modlogChannelID).send("User: "+currentCount+" of "+userCount+" "+currentMember.user+" was kicked for being inactive").catch(console.error);
+								currentMember.kick("User was inactive").catch(console.error);							
+							}		
+							else if(warn)
+							{
+								bot.users.get(currentMember.user.id).send({embed: warnembedMSG}).catch(console.error);
+								bot.channels.get(config.modlogChannelID).send("User: "+currentCount+" of "+userCount+" "+currentMember.user+" was warned for being inactive").catch(console.error);
+							}
+							else
+							{
+								channel.send("User "+currentCount+" of "+userCount+" "+currentMember.user+" has not been seen since we started tracking"); 
+							}		
+							inactiveCount++;
+						}
+						
+					}
+					else
+					{
+						let currentDate = new Date();
+						let inactiveDate = new Date(currentDate.getFullYear(),currentDate.getMonth()-config.inactiveMonthLimit,currentDate.getDate()-(config.inactiveWeekLimit*7), 0, 0, 0, 0);
+						let lastseen = row.date;
+						let lastSeenDate = new Date();
+						lastSeenDate.setTime(lastseen);
+
+						if(inactiveDate > lastSeenDate)
+						{
+							if(!InactiveExempt(currentMember,guild))
+							{
+								if(kick)
+								{							
+									
+									bot.users.get(currentMember.user.id).send({embed: embedMSG}).catch(console.error);
+									bot.channels.get(config.modlogChannelID).send("User: "+currentCount+" of "+userCount+" "+currentMember.user+" was kicked for being inactive").catch(console.error);
+									currentMember.kick("User was inactive").catch(console.error);							
+								}	
+								else if(warn)
+								{
+									bot.users.get(currentMember.user.id).send({embed: warnembedMSG}).catch(console.error);
+									bot.channels.get(config.modlogChannelID).send("User: "+currentCount+" of "+userCount+" "+currentMember.user+" was warned for being inactive").catch(console.error);
+								}	
+								else
+								{
+									channel.send("User "+currentCount+" of "+userCount+" "+currentMember.user+" has not been seen since: "+lastSeenDate); 
+								}		
+								inactiveCount++;
+							}
+						}
+						else
+						{
+							let pause = true;
+						}
+
+					}			
+					}).catch(console.error);
+
+					if(currentCount%100===0)
+					{
+						channel.send("I have checked "+currentCount+" members so far");
+					}
+
+					if(currentCount===userCount)
+					{
+						channel.send("Finished checking "+userCount+" members on this server with a total of "+inactiveCount+" users that are completely inactive.");
+					}
+			},timeDelay)
+				
+			timeDelay += 1000;
+		}
+
+	});
+
+}
+
+function InactiveExempt(currentMember,guild)
+{
+	let exempt = false;						
+
+	if(currentMember.user.bot) { exempt = true;}
+	for(donors in config.donorRoleNames)
+	{
+		if(exempt) { break }
+		let donorRole = guild.roles.find("name",config.donorRoleNames[donors]);
+		exempt = currentMember.roles.has(donorRole.id);		
+
+	}
+	for(exemptions in config.activeExemptRoles)
+	{
+		if(exempt) { break }
+		let exemptRole = guild.roles.find("name",config.activeExemptRoles[exemptions]);
+		exempt = currentMember.roles.has(exemptRole.id);							
+	}
+
+	return exempt;
 }
 
 

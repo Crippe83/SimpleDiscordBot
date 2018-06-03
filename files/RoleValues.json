@@ -77,42 +77,5 @@
     "slinger", 1.25,
     "westbend", 1.25
 
-    ],
-
-    "countyRoles": [
-        "adams", 8,
-        "brown", 8,        
-        "dodge", 8,        
-        "fdlcounty", 8,        
-        "jeffersoncounty", 8,    
-        "juneau", 8,
-        "manitowoccounty", 8,        
-        "milwaukee", 8,        
-        "ozaukee", 8,        
-        "sheboygancounty", 8,        
-        "waukeshacounty", 8,        
-        "washington", 8,
-        "watertown", 8      
-    ],
-
-
-    "donorRoles": [
-        "donoradams", 8,
-        "donorbrown", 8,
-        "donordodge", 8,
-        "donorfdl", 8,
-        "donorjefferson", 8,
-        "donorjuneau", 8,
-        "donormanitowoc", 8,
-        "donormilwaukee", 8,
-        "donorozaukee", 8,
-        "donorsheboygan", 8,
-        "donorwaukesha", 8,
-        "donorwashington", 8,
-        "donorwatertown", 8,
-        "100", 0,
-        "0", 0,
-        "highiv", 0
-    
     ]
 }

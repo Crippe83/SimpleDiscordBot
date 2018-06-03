@@ -1490,7 +1490,7 @@ function Inactive(guild, channel, kick, warn)
 			'color': 0xFF0000,
 			'title': 'YOU HAVE BEEN KICKED',
 			'thumbnail': {'url': config.kickedImg},
-			'description': '**From Server**: '+config.serverName+'\n**Reason**: You were inactive, if you feel this was in error contact us for a reinvite\nSee the pinned post in the Facebook group for more info\nhttps://www.facebook.com/WisconsinPOGODiscord/'
+			'description': '**From Server**: '+config.serverName+'\n**Reason**: You were inactive, if you feel this was in error contact us for a reinvite'
 		};
 
 		let warnembedMSG={

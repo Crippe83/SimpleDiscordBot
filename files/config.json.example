@@ -28,6 +28,9 @@
     "donationChannelID": "",
     "rulesreadChannelID": "",
     "exListChannel": "",
+    
+    "inactiveMonthLimit":3,
+    "inactiveWeekLimit":0,
 
     "ignoredChannels": [
         "",
@@ -35,6 +38,11 @@
         "",
         ""
         
+    ],
+    
+    "activeExemptRoles": [
+        "admin",
+	"donor"
     ],
     
 

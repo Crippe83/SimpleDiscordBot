@@ -239,15 +239,19 @@ if(!message.content.startsWith(config.cmdPrefix)) { return }
 					'username': submittedBy,
 					'avatarURL': message.member.user.displayAvatarURL,
 					'embeds': [{
-						'color': color,
-						'url': researchURL,
+						'color': color,						
 						'image' : {'url': attachmentURL},
 						'title': researchString
-					}]};
+					}]};				
+					
+					
 
-				SendWebhookMessage(webhookMessage,researchChannel, "Research Channel");
+				SendWebhookMessage(webhookMessage,researchChannel, "Research Channel", researchURL);				
 
-				DelayedDeleteMessage(message, 30000);
+
+				
+
+				DelayedDeleteMessage(message, 60000);
 			}			
 			
 		}
@@ -2022,7 +2026,7 @@ function InitializeRoles()
 	return;
 }
 
-function SendWebhookMessage(message, channel, reason)
+function SendWebhookMessage(message, channel, reason, plainText)
 {
 	if(!channel) { return }
 
@@ -2031,14 +2035,18 @@ function SendWebhookMessage(message, channel, reason)
 		if(webhook)
 		{
 			let webhookChannel = new Discord.WebhookClient(webhook.id, webhook.token);
-			webhookChannel.send(message).catch(console.error);
+			webhookChannel.send(message).catch(console.error).then(newMessage =>{
+				if(plainText){ channel.send(plainText); }
+			});
 		}
 		else
 		{
 			channel.createWebhook(reason).then(newWebhook =>
 			{
 				let webhookChannel = new Discord.WebhookClient(newWebhook.id, newWebhook.token);
-				webhookChannel.send(message).catch(console.error);
+				return webhookChannel.send(message).catch(console.error).then(newMessage =>{
+					if(plainText){ channel.send(plainText); }
+				});
 			});
 		}
 			

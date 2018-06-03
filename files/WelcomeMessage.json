@@ -1,0 +1,15 @@
+{
+    "plaintext":"Welcome, %user%",
+    "title":"This is the Northern Illinois PoGo Server ",    
+    "footer":{
+        "text":"If you need help right away tag or DM Lap."},
+    "thumbnail":"https://orig00.deviantart.net/3891/f/2013/049/7/0/lapras__pokeball_by_kurb1-d5vfo95.jpg",
+    "fields": [
+        {
+            "name":"My Name is Lap Controller",
+            "value":"First, I would like to welcome you to the Northern Illinois Pokémon Go Discord Server. I assist Lap with running the discord. If you need anything please let me know by just tagging me using @Lap Controller. I hope you enjoy yourself.",
+            "inline":false
+        }],    
+    "color":2297549
+}
+

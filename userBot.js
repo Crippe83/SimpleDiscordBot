@@ -12,12 +12,9 @@ const welcomeMessage=require('./files/WelcomeMessage.json');
 const emojis = new Emojis.DiscordEmojis();
 
 
-var countyRoles = [];
+
 var localRoles = [];
-var countyRoleValues = [];
 var localRoleValues = [];
-var donorRoles = [];
-var donorRoleValues = [];
 
 
 const currentPokeDexSize = 802;
@@ -851,31 +848,8 @@ if(command==="agree") {
 		}	
 		
 		let roleText = rName.name;
-		let isDonor = false;
-
-		for(donors in config.donorRoleNames)
-		{
-			let donorRole = g.roles.find("name",config.donorRoleNames[donors]);
-			isDonor = m.roles.has(donorRole.id);
-			if(isDonor) { break }
 			
-		}
 		
-		
-		let isDonorRole = false;
-
-		if(donorRoles.indexOf(roleText) >= 0)
-		{
-			isDonorRole = true;		
-
-		}
-		
-		
-		if(isDonorRole && !isDonor)
-		{
-			return c.send("Sorry this role is only available to donors see <#"+config.donationChannelID+"> for more info");
-		}
-
 		var currentRoleValue = CalculateRoleValue(m);
 		var newRoleValue = GetNewRoleValue(roleText);
 		
@@ -885,26 +859,7 @@ if(command==="agree") {
 			return c.send("Sorry that role is not a joinable role see <#"+config.regionsortingInfoChannelID+"> for more info");
 		}
 
-		//CHECK IF NEW POINT TOTAL IS REDUNDANT DUE TO DONOR/NON DONOR COUNTYWIDE
-		if(countyRoles.indexOf(daRoles) >= 0 || donorRoles.indexOf(daRoles) >= 0)
-		{
-			let index = countyRoles.indexOf(daRoles);
-			if(index >= 0)
-			{
-				if(m.roles.find("name",donorRoles[index]))
-				{
-					newRoleValue = 0;
-				}
-			}
-			index = donorRoles.indexOf(daRoles)
-			if(index >= 0 && index < countyRoles.length)
-			{
-				if(m.roles.find("name",countyRoles[index]))
-				{
-					newRoleValue = 0;
-				}
-			}
-		}
+		
 
 		var newTotal = currentRoleValue + newRoleValue;
 
@@ -954,8 +909,7 @@ if(command==="agree") {
 			var remove = false;
 			let currentRole = g.roles.find("name",roleNames[i]);	
 
-			if(donorRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
-			if(countyRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
+			
 			if(localRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
 
 			if(remove)
@@ -971,19 +925,9 @@ if(command==="agree") {
 
 	if (command==="regions") {
 		
-		var message = "County Roles:\n";
+		var message = "Joinable Roles:\n";
 		
-		
-		for(role in countyRoles)
-		{
-			message = message + countyRoles[role] + "\n";
-		}
-		message += "\nDonor Roles:\n";
-		for(role in donorRoles)
-		{
-			message = message + donorRoles[role] + "\n";
-		}
-		message += "\nLocal Roles:\n";
+				
 		for(role in localRoles)
 		{
 			message = message + localRoles[role] + "\n";
@@ -2003,29 +1947,15 @@ function GetAttackingString(types)
 //Values stored in an array alternating between title and value, pull them to two separate arrays
 function InitializeRoles()
 {
-	//FIRST MAKE SURE DATA WAS LOADED
-	if(roleValues.countyRoles.length <= 0)
-	{
-		console.log("Error no county role values set");
-		return;		
-	}
+	
 	if(roleValues.localRoles.length <= 0)
 	{
 		console.log("Error no local role values set");
 		return;
 	}
 
-	//PULL COUNTY ROLE VALUES
-	for(var i = 0; i < roleValues.countyRoles.length; i = i + 2)
-	{
-		countyRoles.push(roleValues.countyRoles[i]);
-	}
-	for(var i = 1; i < roleValues.countyRoles.length; i = i + 2)
-	{
-		countyRoleValues.push(roleValues.countyRoles[i]);
-	}
 
-	//PULL SUBSECTION ROLE VALUES
+	//PULL ROLES WITH VALUES
 	for(var i = 0; i < roleValues.localRoles.length; i = i + 2)
 	{
 		localRoles.push(roleValues.localRoles[i]);
@@ -2035,15 +1965,6 @@ function InitializeRoles()
 		localRoleValues.push(roleValues.localRoles[i]);
 	}
 
-	//PULL DONOR ROLE VALUES
-	for(var i = 0; i < roleValues.donorRoles.length; i = i + 2)
-	{
-		donorRoles.push(roleValues.donorRoles[i]);
-	}
-	for(var i = 1; i < roleValues.donorRoles.length; i = i +2)
-	{
-		donorRoleValues.push(roleValues.donorRoles[i]);
-	}
 
 
 	return;
@@ -2081,22 +2002,8 @@ function GetNewRoleValue(rName)
 	let newValue= -1;
 
 	var index= -1;
-
 	
 	
-	index = countyRoles.indexOf(rName);
-	if(index >= 0)
-	{
-		newValue = countyRoleValues[index];
-		return newValue;
-	}
-
-	index = donorRoles.indexOf(rName);
-	if(index >=0)
-	{		
-		newValue = donorRoleValues[index];
-		return newValue;
-	}
 
 	index = localRoles.indexOf(rName);
 	if(index >= 0)
@@ -2115,33 +2022,8 @@ function CalculateRoleValue(user)
 	let totalPoints=0;	
 
 	
-	var hasCountyRoles = [];
 
-	//CHECK BASE COUNTY ROLE VALUE
-	for(var i=0; i < countyRoles.length; i++)
-	{
-		var has = false;
-		if(user.roles.find("name",countyRoles[i]))
-		{
-			has = true;
-			totalPoints += countyRoleValues[i];			
-		}
-		
-		hasCountyRoles.push(has);
-	}
-
-	//CHECK DONOR COUNTY ROLES AND DON'T COUNT DUPLICATE
-	for(var i = 0; i < donorRoles.length; i++)
-	{
-		if(i < countyRoles.length && hasCountyRoles[i])
-		{
-
-		}
-		else if(user.roles.find("name",donorRoles[i]))
-		{
-			totalPoints += countyRoleValues[i];
-		}
-	}
+	
 
 	//CHECK BASE ROLE VALUE
 	for(var i = 0; i < localRoles.length; i++)

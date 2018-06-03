@@ -10,12 +10,9 @@ var embedMSG=""; var skip=""; var msg1=""; var msg2="";
 
 //ROLE INFO
 const roleValues=require('./files/RoleValues.json');
-var countyRoles = [];
 var localRoles = [];
-var countyRoleValues = [];
 var localRoleValues = [];
-var donorRoles = [];
-var donorRoleValues = [];
+
 
 
 
@@ -961,8 +958,7 @@ if(command==="pidgey" || command==="timeout"){
 				var remove = false;
 				let currentRole = g.roles.find("name",roleNames[i]);	
 
-				if(donorRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
-				if(countyRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
+							
 				if(localRoles.indexOf(roleNames[i]) >= 0) {remove = true;}
 
 				if(remove)
@@ -1222,26 +1218,11 @@ function DeleteTimeoutChannel(user, guild, msgChannel)
 //Values stored in an array alternating between title and value, pull them to two separate arrays
 function InitializeRoles()
 {
-	//FIRST MAKE SURE DATA WAS LOADED
-	if(roleValues.countyRoles.length <= 0)
-	{
-		console.log("Error no county role values set");
-		return;		
-	}
+	
 	if(roleValues.localRoles.length <= 0)
 	{
 		console.log("Error no local role values set");
 		return;
-	}
-
-	//PULL COUNTY ROLE VALUES
-	for(var i = 0; i < roleValues.countyRoles.length; i = i + 2)
-	{
-		countyRoles.push(roleValues.countyRoles[i]);
-	}
-	for(var i = 1; i < roleValues.countyRoles.length; i = i + 2)
-	{
-		countyRoleValues.push(roleValues.countyRoles[i]);
 	}
 
 	//PULL SUBSECTION ROLE VALUES
@@ -1254,15 +1235,7 @@ function InitializeRoles()
 		localRoleValues.push(roleValues.localRoles[i]);
 	}
 
-	//PULL DONOR ROLE VALUES
-	for(var i = 0; i < roleValues.donorRoles.length; i = i + 2)
-	{
-		donorRoles.push(roleValues.donorRoles[i]);
-	}
-	for(var i = 1; i < roleValues.donorRoles.length; i = i +2)
-	{
-		donorRoleValues.push(roleValues.donorRoles[i]);
-	}
+	
 
 
 	return;
@@ -1620,14 +1593,7 @@ function InactiveExempt(currentMember,guild)
 {
 	let exempt = false;						
 
-	if(currentMember.user.bot) { exempt = true;}
-	for(donors in config.donorRoleNames)
-	{
-		if(exempt) { break }
-		let donorRole = guild.roles.find("name",config.donorRoleNames[donors]);
-		exempt = currentMember.roles.has(donorRole.id);		
-
-	}
+	if(currentMember.user.bot) { exempt = true;}	
 	for(exemptions in config.activeExemptRoles)
 	{
 		if(exempt) { break }

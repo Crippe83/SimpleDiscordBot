@@ -65,7 +65,7 @@ bot.on('guildMemberAdd', member => {
 	member.send(plainText).then(message =>
 	{
 		return member.send({embed: embedMsg}).catch(console.error);
-	});
+	}).catch(console.error);
 	
 });
 

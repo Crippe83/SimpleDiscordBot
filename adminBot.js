@@ -14,6 +14,8 @@ var countyRoles = [];
 var localRoles = [];
 var countyRoleValues = [];
 var localRoleValues = [];
+var donorRoles = [];
+var donorRoleValues = [];
 
 
 
@@ -1252,7 +1254,15 @@ function InitializeRoles()
 		localRoleValues.push(roleValues.localRoles[i]);
 	}
 
-	
+	//PULL DONOR ROLE VALUES
+	for(var i = 0; i < roleValues.donorRoles.length; i = i + 2)
+	{
+		donorRoles.push(roleValues.donorRoles[i]);
+	}
+	for(var i = 1; i < roleValues.donorRoles.length; i = i +2)
+	{
+		donorRoleValues.push(roleValues.donorRoles[i]);
+	}
 
 
 	return;

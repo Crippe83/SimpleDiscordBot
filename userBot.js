@@ -833,7 +833,7 @@ if(command==="agree") {
 
 
 // ######################### JOIN ROLES ###############################
-	if(command==="join") {
+	if(command==="join" || command==="iam") {
 		if(!args[0]) { return c.send("Proper useage !join <ROLE NAME> see <#"+config.regionsortingInfoChannelID+"> for more info")}
 	
 

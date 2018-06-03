@@ -815,7 +815,7 @@ if(command==="agree") {
 			var color = Math.floor(Math.random()*16777215);
 			let embedMSG={
 				'color': color,
-				'title': '\u00BB\u00BB One time PayPal donation without benefit \u00AB \u00AB',
+				'title': '\u00BB\u00BB Click here to donate via PayPal \u00AB \u00AB',
 				'url': config.paypalURL,				
 				'description': "Thank you for your continued support",
 			};

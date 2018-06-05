@@ -31,6 +31,7 @@ bot.on('ready', () => {
 	// CREATE DATABASE TABLE 
 	sql.run("CREATE TABLE IF NOT EXISTS last_seen (userID TEXT, lastMessage TEXT, date TEXT)").catch(console.error);
 	sql.run("CREATE TABLE IF NOT EXISTS ex_channels (channelName TEXT, endDate TEXT)").catch(console.error);
+	sql.run("CREATE TABLE IF NOT EXISTS temporary_roles (userID TEXT, temporaryRole TEXT, startDate TEXT, endDate TEXT, addedBy TEXT)").catch(console.error);
 	
 });
 
@@ -1255,6 +1256,7 @@ function CreateEXChannel(channelName, categoryName, guild, msgChannel)
 		channel.overwritePermissions(everyone, {READ_MESSAGES: false, READ_MESSAGE_HISTORY: false});
 		// CREATE ROLE WITH THE SAME NAME AS THE CHANNEL AND GIVE IT PERMISSION TO READ, READ HISTORY and SEND MESSAGES
 		guild.createRole({name: channelName}).then(role => {
+			role.setMentionable(true);
 			channel.overwritePermissions(role, {READ_MESSAGES: true, READ_MESSAGE_HISTORY: true, SEND_MESSAGES: true});
 		});
 		// SEND A MESSAGE TO THE CHANNEL SO USERS CAN FIND AND JOIN THE EX LOBBY

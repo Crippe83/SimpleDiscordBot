@@ -233,6 +233,8 @@ if(!message.content.startsWith(config.cmdPrefix)) { return }
 
 			researchString.slice(0,-1);
 
+			if(researchString.length > 256) { return c.send("Please submit a research description that is shorter than 256 characters"); }
+
 			let attachment = message.attachments.values().next().value;
 			if(attachment) { attachmentURL = attachment.url }
 

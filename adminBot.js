@@ -688,98 +688,93 @@ sql.get(`SELECT * FROM last_seen WHERE userID="${m.id}"`).then(row => {
 
 // ######################### CREATE EX CHANNEL #########################
 	if(command==="ex"){
-		if(m.roles.has(ModR.id) || m.roles.has(AdminR.id)){
+	
 
-			sql.run("CREATE TABLE IF NOT EXISTS ex_channels (channelName TEXT, endDate TEXT)").catch(console.error);
-			
-			if(args.length < 3) { return c.send("Proper format for !ex is:\n !ex m/d/y time gym name") }
+		sql.run("CREATE TABLE IF NOT EXISTS ex_channels (channelName TEXT, endDate TEXT)").catch(console.error);
+		
+		if(args.length < 3) { return c.send("Proper format for !ex is:\n !ex m/d/y time gym name") }
 
-			let currentDate = new Date();
+		let currentDate = new Date();
 
-			let dateSplit = args[0].split("/");
+		let dateSplit = args[0].split("/");
 
-			// IF USER ONLY ENTERS M/D add in Y - TO DO HANDLE END OF YEAR WHEN NEED TO ADD NEXT YEAR
-			if(dateSplit.length == 2) { dateSplit.push(currentDate.getFullYear()) }
+		// IF USER ONLY ENTERS M/D add in Y - TO DO HANDLE END OF YEAR WHEN NEED TO ADD NEXT YEAR
+		if(dateSplit.length == 2) { dateSplit.push(currentDate.getFullYear()) }
 
 
-			if(dateSplit.length != 3) { return c.send("Date must be in the format m/d/y") }
+		if(dateSplit.length != 3) { return c.send("Date must be in the format m/d/y") }
 
-			let time = ParseTime(args[1]);
+		let time = ParseTime(args[1]);
 
-			if(time==="unknown") { return c.send("That is an unknown time") }
+		if(time==="unknown") { return c.send("That is an unknown time") }
 
-			let timeString = "";
+		let timeString = "";
 
-			if(time[0] < 12)
-			{
-				if(time[0]===0)
-				{
-					timeString += "12";
-				}
-				else{
-					timeString += time[0];
-				}
-
-				if(time[1] > 0)
-				{
-					timeString += time[1];
-				}
-
-				timeString += "am";
-
-			}
-			if(time[0] >= 12)
-			{
-				if(time[0]===12)
-				{
-					timeString += time[0];
-				}
-				else
-				{
-					timeString += time[0]-12;
-				}
-
-				if(time[1] > 0)
-				{ 
-					timeString += time[1];
-				}
-
-				timeString += "pm";
-			}
-
-			// dateSplit[2] = YEAR; dateSplit[1] = DAY; dateSplit[0] = MONTH, time[0] = HOUR end time should be +1 hour after raid start; time[1] = minutes
-			let endDate = new Date(dateSplit[2],dateSplit[0]-1,dateSplit[1], time[0] + 1, time[1], 0, 0);
-
-			// Make sure date is in the future
-			if(currentDate > endDate) { return c.send("That date has already passed") }
-
-			// CHANNEL name will be M-D_Time(pm || am)_gym_name - put it together 
-			let newChannelName = dateSplit[0] + "-" + dateSplit[1] + "_" + timeString;
-
-			for(var i = 2; i < args.length; i++)
-			{
-				newChannelName += "_";
-				newChannelName += args[i];				
-			}
-			
-			// Check for existing channel with the same name to help avoid duplicates
-			let duplicateChannel = g.channels.find("name",newChannelName);
-
-			if(duplicateChannel) { return c.send("I already have a channel created for that raid look at <#"+config.exListChannel+">") }
-
-			// Second Parameter is in the function to allow for user inputed category in the future, would need to adjust above parameter parsing
-			CreateEXChannel(newChannelName,config.EXRaidCategory, g, c);
-
-			sql.run("INSERT INTO ex_channels (channelName, endDate) VALUES (?, ?)", 
-							[newChannelName, endDate]);
-
-			return;
-
-		}
-		else
+		if(time[0] < 12)
 		{
-			return c.send("That command can only be used by mods and admins");
+			if(time[0]===0)
+			{
+				timeString += "12";
+			}
+			else{
+				timeString += time[0];
+			}
+
+			if(time[1] > 0)
+			{
+				timeString += time[1];
+			}
+
+			timeString += "am";
+
 		}
+		if(time[0] >= 12)
+		{
+			if(time[0]===12)
+			{
+				timeString += time[0];
+			}
+			else
+			{
+				timeString += time[0]-12;
+			}
+
+			if(time[1] > 0)
+			{ 
+				timeString += time[1];
+			}
+
+			timeString += "pm";
+		}
+
+		// dateSplit[2] = YEAR; dateSplit[1] = DAY; dateSplit[0] = MONTH, time[0] = HOUR end time should be +1 hour after raid start; time[1] = minutes
+		let endDate = new Date(dateSplit[2],dateSplit[0]-1,dateSplit[1], time[0] + 1, time[1], 0, 0);
+
+		// Make sure date is in the future
+		if(currentDate > endDate) { return c.send("That date has already passed") }
+
+		// CHANNEL name will be M-D_Time(pm || am)_gym_name - put it together 
+		let newChannelName = dateSplit[0] + "-" + dateSplit[1] + "_" + timeString;
+
+		for(var i = 2; i < args.length; i++)
+		{
+			newChannelName += "_";
+			newChannelName += args[i];				
+		}
+		
+		// Check for existing channel with the same name to help avoid duplicates
+		let duplicateChannel = g.channels.find("name",newChannelName);
+
+		if(duplicateChannel) { return c.send("I already have a channel created for that raid look at <#"+config.exListChannel+">") }
+
+		// Second Parameter is in the function to allow for user inputed category in the future, would need to adjust above parameter parsing
+		CreateEXChannel(newChannelName,config.EXRaidCategory, g, c);
+
+		sql.run("INSERT INTO ex_channels (channelName, endDate) VALUES (?, ?)", 
+						[newChannelName, endDate]);
+
+		return;
+		
 	}
 
 
@@ -1283,6 +1278,11 @@ function ParseTime(time)
 		time = time.slice(0,-2);
 	}
 
+	if(time.includes(":"))
+	{
+		time = time.split(":");
+		time = time.join("");
+	}	
 	
 	
 	switch(time.length)

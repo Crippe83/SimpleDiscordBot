@@ -1320,6 +1320,9 @@ function ParseTime(time)
 bot.on('raw', (event, guild) => {
 	if(event.t==='MESSAGE_REACTION_ADD')
 	{
+		//MAKE SURE ITS IN THE RIGHT SERVER
+		if(event.d.guild_id!=config.serverID) { return; }
+
 		let guild = bot.guilds.find("id",config.serverID);
 		let user = guild.members.find("id",event.d.user_id);
 
@@ -1363,6 +1366,9 @@ bot.on('raw', (event, guild) => {
 bot.on('raw', (event, guild) => {
 	if(event.t==='MESSAGE_REACTION_REMOVE')
 	{
+		//MAKE SURE ITS IN THE RIGHT SERVER
+		if(event.d.guild_id!=config.serverID) { return; }
+		
 		let guild = bot.guilds.find("id",config.serverID);
 		let user = guild.members.find("id",event.d.user_id);
 
